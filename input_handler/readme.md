@@ -57,3 +57,13 @@ Number of characters stored, or `-1` if EOF is encountered before newline.
 - Handles EOF to exit gracefully.
 
 ---
+
+## Notes
+
+The buffer size is deliberately small to demonstrate strict input control.
+You can adapt buffer sizes and validation rules as needed.
+This pattern is useful for command-line programs requiring reliable and robust input.
+
+---
+
+## Licence
