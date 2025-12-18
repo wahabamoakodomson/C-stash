@@ -8,7 +8,6 @@
 #include <unistd.h>
 
 #define BUFSIZE (1024)
-#define MAXINPUTLEN (64)
 
 // Main server program for handling UDP requests to manage computer bookings.
 // Sets up a UDP socket, loads computer data from file, listens for commands,
