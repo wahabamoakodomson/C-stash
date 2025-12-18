@@ -12,21 +12,10 @@ This is intended as a **learning example** for understanding:
 ---
 
 ## Project Structure
-├── client.c # UDP client source code
-├── server.c # UDP server source code
-├── build.sh # Build script
-└── readme.md # Project documentation
-
-server\
-   ├── computers.dat        ' Binary data file storing computer booking info
-   ├── computers.h          ' Data structure definitions for computers
-   ├── database.c           ' Functions managing computer data (load/save/book)
-   ├── database.h           ' Header for database functions and types
-   ├── errors.h             ' Error codes and error handling utilities
-   ├── server_helpers.c     ' Server-side utility/helper functions
-   ├── server_helpers.h     ' Header for server helper functions
-   └── server.c             ' Main server application code
-
+|--- client.c # UDP client source code
+|--- server.c # UDP server source code
+|--- build.sh # Build script
+|___ readme.md # Project documentation
 
 ---
 
