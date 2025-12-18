@@ -66,4 +66,7 @@ This pattern is useful for command-line programs requiring reliable and robust i
 
 ---
 
-## Licence
+## License
+
+This project is provided for educational purposes.
+Feel free to modify and extend it as needed.
