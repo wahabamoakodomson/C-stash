@@ -5,91 +5,82 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include <stdlib.h>
-
-// Define the size of the buffer for incoming/outgoing data
-#define BUFFERSIZE (1024)
+#include <unistd.h>
 
 
-// main - Entry point for UDP server program
-// Args:
-//	argc - Number of command-line arguments (should be 3: program name, IP 
-//	address, port)
-//	argv - Array of command-line argument strings:
-//	argv[1]: IP address to bind the UDP server to (e.g., "127.0.0.1")
-//	argv[2]: Port number to bind the UDP server to (e.g., "8080")
-// Returns:
-//	0 on successful execution
-//	-1 if socket creation or argument validation fails
-//	-2 if binding the socket to the IP/port fails
+#define BUFSIZE (1024)
+
+// Entry point for the UDP client application.
+// Arguments:
+// argc - number of command-line arguments.
+// argv - array of command-line argument strings.
+// Return: 0 on normal termination, negative values on error.
 int main(int argc, char **argv)
 {
-	// Check if IP address and port are provided as command-line arguments
+	// Socket file descriptor and number of bytes received
+	int sockfd, n;
+
+	// Server address structure
+	struct sockaddr_in addr;
+
+	// Size of the address structure
+	socklen_t addr_size;
+
+	// Server IP address & port no provided via command-line argument
+	char *ipaddr = argv[1];
+	int port = atoi(argv[2]);
+
+	// Buffers for sending, receiving, and user input
+	char send_data[BUFSIZE], recv_data[BUFSIZE], buf[BUFSIZE];
+
+	// Ensure the server IP address is provided
 	if (argc < 3) {
-		printf("Usage: %s <ip-address> <port> \n", argv[0]);
+		printf("Error, too few arguments\n");
+		printf("Call with: udpclient <host-ip> <port no>\n");
+		printf("udpclient 127.0.0.1 5000 for your local machine\n");
+
 		return -1;
 	}
 
-	char *ip = argv[1];		// IP address to bind the socket to
-	int port = atoi(argv[2]);	// Port number to bind the socket to
-
-	int sockfd, n;
-	char buffer[BUFFERSIZE];	// Buffer for data transfer
-	socklen_t addr_size;
-	struct sockaddr_in server_addr, client_addr;
-
-	// Create a UDP socket (SOCK_DGRAM)
+	// Create a UDP socket
 	sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 	if (sockfd < 0) {
-		perror("[-] socket error\n");
-		return -1;
-	}
+		perror("[-] socket error");
 
-	// Initialize server address structure with zeros
-	memset(&server_addr, '\0', sizeof(server_addr));
-	
-	// IPv4 address family
-	server_addr.sin_family = AF_INET;
-
-	// Convert port number to network byte order
-	server_addr.sin_port = htons(port);
-
-	// Convert IP string to network address
-	server_addr.sin_addr.s_addr = inet_addr(ip); 
-
-
-	// Bind the socket to the specified IP address and port
-	n = bind(sockfd, (struct sockaddr *)&server_addr, sizeof(server_addr));
-	if (n < 0) {
-		perror("[-]bind error");
 		return -2;
 	}
 
-	// Infinite loop to receive and respond to incoming UDP messages
+	// Initialize and configure the server address structure
+	memset(&addr, 0, sizeof(addr));
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(port);
+	inet_pton(AF_INET, ipaddr, &addr.sin_addr);
+
+	// Main interaction loop
 	while (1) {
-		// Clear the buffer before receiving data
-		bzero(buffer, BUFFERSIZE);
 
-		// Size of the client address structure
-		addr_size = sizeof(client_addr);
+		// Send to the server
+		snprintf(send_data, BUFSIZE, "Client connected.");
+		sendto(sockfd, send_data, strlen(send_data), 0,
+		       (struct sockaddr *)&addr, sizeof(addr));
 
-		// Receive data from a client; store sender address in 
-		// client_addr
-		recvfrom(sockfd, buffer, BUFFERSIZE, 0,
-			 (struct sockaddr *)&client_addr, &addr_size);
 
-		// Print the received data
-		printf("data received: %s \n", buffer);
+		// Prepare to receive response from the server
+		bzero(recv_data, BUFSIZE);
+		addr_size = sizeof(addr);
+		// Receive server response
+		recvfrom(sockfd, recv_data, sizeof(recv_data) - 1, 0,
+			 (struct sockaddr *)&addr, &addr_size);
+		printf("%s\n", recv_data);
 
-		// Clear buffer before sending response
-		bzero(buffer, BUFFERSIZE);
 
-		// Prepare response message
-		strcpy(buffer, "Welcome");
+		// break after successful sending and receiving just once
+		break;
 
-		// Send response back to the client
-		sendto(sockfd, buffer, BUFFERSIZE, 0,
-		       (struct sockaddr *)&client_addr, sizeof(client_addr));
 	}
+
+	// Close the socket before exiting
+	close(sockfd);
 
 	return 0;
 }
