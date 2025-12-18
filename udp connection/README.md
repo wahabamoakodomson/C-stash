@@ -13,9 +13,13 @@ This is intended as a **learning example** for understanding:
 
 ## Project Structure
 |--- client.c # UDP client source code
+
 |--- server.c # UDP server source code
+
 |--- build.sh # Build script
+
 |___ readme.md # Project documentation
+
 
 ---
 
