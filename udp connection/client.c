@@ -30,8 +30,8 @@ int main(int argc, char **argv)
 	char *ipaddr = argv[1];
 	int port = atoi(argv[2]);
 
-	// Buffers for sending, receiving, and user input
-	char send_data[BUFSIZE], recv_data[BUFSIZE], buf[BUFSIZE];
+	// Buffers for sending and receiving;
+	char send_data[BUFSIZE], recv_data[BUFSIZE];
 
 	// Ensure the server IP address is provided
 	if (argc < 3) {
