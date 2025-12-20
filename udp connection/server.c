@@ -21,7 +21,7 @@ int main(int argc, char **argv)
 
 	if (argc < 2) {
 		printf("Error, too few arguments\n");
-		printf("Call with: udpserver <host-ip>\n");
+		printf("Call with: udpserver <port>\n");
 		printf("Example: ./udpclient 5000\n");
 
 		return -1;
